@@ -16,6 +16,7 @@ module Mitenaizo
         next unless data['type'] == 'message' && data['subtype'].nil?
         next unless data['bot_id'].nil?
 
+        STDERR.puts(data.inspect)
         case data.text
         when /<@#{@client.self.id}>/
           when_receive_mention(data)
@@ -36,7 +37,15 @@ module Mitenaizo
     def when_receive_mention(data)
       STDERR.puts("[#{data.channel}] receive mention: #{CGI.unescapeHTML(data.text)}")
       text = @brain.speech(data.channel, 100)
-      @client.message(channel: data.channel, text: "<@#{data.user}> #{text}", as_user: true)
+      @client.message(
+        {
+          channel: data.channel,
+          text: "<@#{data.user}> #{text}",
+          as_user: true
+        }.tap { |hash|
+          break hash.merge(thread_ts: data['thread_ts']) if data['thread_ts']
+        }
+      )
       STDERR.puts("[#{data.channel}] post: #{text}")
     end
 
