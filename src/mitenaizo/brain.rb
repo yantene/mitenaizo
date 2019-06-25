@@ -7,7 +7,7 @@ module Mitenaizo
     END_TOKENS = (1..MARKOV_ORDER).map { |o| "__MITENAIZO_END_#{o}__" }.freeze
 
     def initialize
-      @redis = Redis.new(host: ENV['REDIS_HOST'], port: ENV['REDIS_PORT'])
+      @redis = Redis.new(host: ENV.fetch('REDIS_HOST', 'localhost'), port: ENV.fetch('REDIS_PORT', 6379))
     end
 
     def memorize(text, channel)
