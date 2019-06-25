@@ -9,7 +9,7 @@ module Mitenaizo
     MAX_WORDS = 100
 
     def initialize
-      @redis = Redis.new(host: ENV['REDIS_HOST'], port: ENV['REDIS_PORT'])
+      @redis = Redis.new(host: ENV.fetch('REDIS_HOST', 'localhost'), port: ENV.fetch('REDIS_PORT', 6379))
     end
 
     # channel のデータとして text を記憶する
