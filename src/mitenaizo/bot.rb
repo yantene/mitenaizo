@@ -16,6 +16,7 @@ module Mitenaizo
         next unless data['type'] == 'message' && data['subtype'].nil?
         next unless data['bot_id'].nil?
 
+        STDERR.puts(data.inspect)
         case data.text
         when /<@#{@client.self.id}>/
           when_receive_mention(data)
