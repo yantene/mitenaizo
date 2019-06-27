@@ -2,7 +2,7 @@ require_relative './brain'
 
 module Mitenaizo
   class Bot
-    IGNORE_PATTERN = /[<>]/.freeze
+    ENTITY_PATTERN = /<[^\s>]+>/.freeze
 
     def initialize
       Slack.configure do |config|
@@ -14,17 +14,13 @@ module Mitenaizo
 
       @client.on :message do |data|
         next unless data['type'] == 'message' && data['subtype'].nil?
-        next unless data['bot_id'].nil?
+        # next unless data['bot_id'].nil?
 
         STDERR.puts(data.inspect)
-        case data.text
-        when /<@#{@client.self.id}>/
-          when_receive_mention(data)
-        when IGNORE_PATTERN
-          # When include anti-pattern
-        else
-          when_receive_monologue(data)
-        end
+
+        when_receive_mention(data) if data.text =~ /<@#{@client.self.id}>/
+
+        when_receive(data)
       end
     end
 
@@ -49,9 +45,10 @@ module Mitenaizo
       STDERR.puts("[#{data.channel}] post: #{text}")
     end
 
-    def when_receive_monologue(data)
-      STDERR.puts("[#{data.channel}] receive monologue: #{CGI.unescapeHTML(data.text)}")
-      @brain.memorize(CGI.unescapeHTML(data.text), data.channel)
+    def when_receive(data)
+      text = CGI.unescapeHTML(data.text.gsub(ENTITY_PATTERN, '')).strip
+      STDERR.puts("[#{data.channel}] receive post: #{text}")
+      @brain.memorize(text, data.channel)
     end
   end
 end
