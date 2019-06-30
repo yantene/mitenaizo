@@ -14,7 +14,6 @@ module Mitenaizo
 
       @client.on :message do |data|
         next unless data['type'] == 'message' && data['subtype'].nil?
-        # next unless data['bot_id'].nil?
 
         STDERR.puts(data.inspect)
 
