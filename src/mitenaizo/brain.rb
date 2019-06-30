@@ -24,9 +24,10 @@ module Mitenaizo
     def speech(channel)
       loop do
         generate_sentence(channel).tap do |text|
-          next unless Mitenaizo::Validator.validate(text)
+          next unless Mitenaizo::Validator.parentheses(text)
+          next unless Mitenaizo::Validator.present(text)
 
-          return sentence
+          return text
         end
       end
     end

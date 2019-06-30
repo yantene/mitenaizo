@@ -1,10 +1,5 @@
 module Mitenaizo
   module Validator
-    # 全バリデーションを実行
-    def self.validate(text)
-      (singleton_methods - :validate).all? { |method| call(method, text) }
-    end
-
     PARENTHESES = '<>＜＞()（）{}｛｝[]［］「」『』【】'.chars.freeze
     PARENTHESES_OPEN, PARENTHESES_CLOSE = PARENTHESES.each_slice(2).to_a.transpose.map(&:freeze)
     PARENTHESES_MAP = PARENTHESES_OPEN.zip(PARENTHESES_CLOSE).to_h.freeze
