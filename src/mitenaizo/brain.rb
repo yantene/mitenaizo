@@ -1,4 +1,5 @@
 require 'cgi'
+require_relative './validator'
 
 module Mitenaizo
   class Brain
@@ -22,7 +23,9 @@ module Mitenaizo
     # channel で記憶したデータから文を生成する
     def speech(channel)
       loop do
-        generate_sentence(channel).tap do |sentence|
+        generate_sentence(channel).tap do |text|
+          next unless Mitenaizo::Validator.validate(text)
+
           return sentence
         end
       end
