@@ -30,7 +30,7 @@ module Mitenaizo
     private
 
     def when_receive_mention(data)
-      STDERR.puts("[#{data.channel}] receive mention: #{CGI.unescapeHTML(data.text)}")
+      STDERR.puts("[#{data.channel}] receive mention: #{Slack::Messages::Formatting.unescape(data.text)}")
       text = @brain.speech(data.channel)
       @client.message(
         {
@@ -45,7 +45,7 @@ module Mitenaizo
     end
 
     def when_receive(data)
-      text = CGI.unescapeHTML(data.text.gsub(ENTITY_PATTERN, '')).strip
+      text = Slack::Messages::Formatting.unescape(data.text.gsub(ENTITY_PATTERN, '')).strip
       STDERR.puts("[#{data.channel}] receive post: #{text}")
       @brain.memorize(text, data.channel)
     end

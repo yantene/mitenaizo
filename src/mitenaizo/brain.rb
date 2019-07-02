@@ -1,4 +1,3 @@
-require 'cgi'
 require_relative './validator'
 
 module Mitenaizo
